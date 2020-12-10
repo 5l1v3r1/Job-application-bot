@@ -9,7 +9,7 @@ import time
 # Enter your credentials here
 user_name = "michael.luma" #ENTER USER NAME HERE
 password = "Y2xUPE84zgWJ%RR" #ENTER PASSWORD HERE
-rate = 35
+rate = 35 #tutor's standard hourly rate
 
 client_name = ""
 
@@ -42,9 +42,13 @@ def login_to_jobs(user_name, password):
 
 login_to_jobs(user_name, password) #ADD TO MAIN
 
-# //*[@id="wyzantResponsiveColumns"]/div[1]/h4
 
 def customized_pitch(client_name):
+	"""
+	Adds the name of the client to the elevator pitch
+	client_name: Client's name
+
+	"""
 	pitch = f"Hello {client_name}, how good am I at python programming? Well, this job application was actually made by one of the bots I made using python. "
 	pitch += "On a more serious note, I have been a tutor for more than 3 years now and I assisted have multiple students reach their academic goals "
 	pitch += "such as this bot for example!"
@@ -52,6 +56,12 @@ def customized_pitch(client_name):
 
 
 def apply_to_job(course):
+
+	"""
+	Applies to jobs within a certain course
+	course: Course to apply jobs for
+
+	"""
 	course = course.title()
 	job_link = driver.find_element_by_link_text(course)
 	job_link.click()
