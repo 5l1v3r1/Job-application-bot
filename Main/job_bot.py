@@ -89,10 +89,12 @@ def apply_to_job(coursesTaught, numJobs):
 
 		# submit job application
 		try:
-			button = driver.find_element_by_xpath("//*[@id='job_application_form']/input[5]")
-			button.click()
+			# button = driver.find_element_by_xpath("//*[@id='job_application_form']/input[5]")
+			# button.click()
 			sendText(client_name, recomm_hourly_rate, course)
-		jobsApplied += 1
+			jobsApplied += 1
+		except:
+			continue
 
 def sendText(client_name, recomm_hourly_rate, course):
 	pass
