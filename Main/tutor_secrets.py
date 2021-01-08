@@ -16,8 +16,9 @@ coursesTaught = ["Python", "Calculus", "French"]
 dealBreakers = ["machine learning", "matplotlib", "django", "data science", "pandas"]
 
 #ENTER THE NUMBER OF JOBS TO APPLY
-jobstoApply = 3
+jobstoApply = 1
 
+#ENTER YOUR ELEVATOR PITCHES
 pitches = { "Python": "Hello client_name, how good am I at python programming? Well, this job application was actually made by one of the bots I made using python. " + 
 						"On a more serious note, I have been a tutor for more than 3 years now and I assisted have multiple students reach their academic goals " + 
 						"such as this bot for example!",
