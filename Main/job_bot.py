@@ -5,13 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+from tutor_secrets import user_name, password, rate, pitches, coursesTaught, jobstoApply
 
-# Enter your credentials here
-user_name = "michael.luma" #ENTER USER NAME HERE
-password = "Y2xUPE84zgWJ%RR" #ENTER PASSWORD HERE
-rate = 35 #tutor's standard hourly rate
-
-client_name = ""
 
 # Path to execute chrome browser from
 PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -43,56 +38,65 @@ def login_to_jobs(user_name, password):
 login_to_jobs(user_name, password) #ADD TO MAIN
 
 
-def customized_pitch(client_name):
+def customized_pitch(client_name, course, pitches):
 	"""
 	Adds the name of the client to the elevator pitch
 	client_name: Client's name
 
 	"""
-	pitch = f"Hello {client_name}, how good am I at python programming? Well, this job application was actually made by one of the bots I made using python. "
-	pitch += "On a more serious note, I have been a tutor for more than 3 years now and I assisted have multiple students reach their academic goals "
-	pitch += "such as this bot for example!"
-	return pitch
+	pitch = pitches[course.title()]
+	return pitch.replace("client_name", client_name)
 
 
-def apply_to_job(course):
+def apply_to_job(coursesTaught, numJobs):
 
 	"""
 	Applies to jobs within a certain course
 	course: Course to apply jobs for
 
 	"""
-	course = course.title()
-	job_link = driver.find_element_by_link_text(course)
-	job_link.click()
+	jobsApplied = 0
+	while jobsApplied <= numJobs:
+		job_link = driver.find_element_by_xpath("//*[@id='jobs-list']/div[1]/div/div/h3/a")
+		job_link.click()
 
-	# Grabbing the client's first name
-	client_name = driver.find_element_by_xpath("//*[@id='wyzantResponsiveColumns']/div[1]/h4").text
+		course = driver.find_element_by_xpath("//*[@id='wyzantResponsiveColumns']/div[1]/h1").text.title()
 
-	#Add elevator pitch to the appliction
-	# pitch = customized_pitch(client_name)
-	# pitch_insert = driver.find_element_by_xpath("//*[@id='personal_message']")
-	# pitch_insert.clear()
-	# pitch_insert.send_keys(pitch)
-	
-	#negotiate the price
-	recomm_hourly_rate = driver.find_element_by_xpath("//*[@id='job_application_form']/div[4]/div[2]/p").text
-	recomm_hourly_rate = int(recomm_hourly_rate[2:]) #remove the dollar sign
+		# Grabbing the client's first name
+		client_name = driver.find_element_by_xpath("//*[@id='wyzantResponsiveColumns']/div[1]/h4").text
 
-	# insert higher rate in application
-	submit_rate = driver.find_element_by_xpath("//*[@id='hourly_rate']")
-	submit_rate.clear()
+		# Add elevator pitch to the appliction
+		pitch = customized_pitch(client_name, course, pitches)
+		pitch_insert = driver.find_element_by_xpath("//*[@id='personal_message']")
+		pitch_insert.clear()
+		pitch_insert.send_keys(pitch)
+		
+		#negotiate the price
+		try:
+			recomm_hourly_rate = driver.find_element_by_xpath("//*[@id='job_application_form']/div[4]/div[2]/p").text
+			recomm_hourly_rate = int(recomm_hourly_rate[2:]) #remove the dollar sign
+		except:
+			recomm_hourly_rate = rate
+		# insert higher rate in application
+		submit_rate = driver.find_element_by_xpath("//*[@id='hourly_rate']")
+		submit_rate.clear()
 
-	# swap regular hourly rate if the recommended rate is high
-	if recomm_hourly_rate > rate:
-		submit_rate.send_keys(str(recomm_hourly_rate))
-	else:
-		submit_rate.send_keys(str(rate))
+		# swap regular hourly rate if the recommended rate is high
+		if recomm_hourly_rate >= rate:
+			submit_rate.send_keys(str(recomm_hourly_rate))
+		else:
+			submit_rate.send_keys(str(rate))
 
-	# submit job application
-	button = driver.find_element_by_xpath("//*[@id='job_application_form']/input[5]")
-	button.click()
+		# submit job application
+		try:
+			button = driver.find_element_by_xpath("//*[@id='job_application_form']/input[5]")
+			button.click()
+			sendText(client_name, recomm_hourly_rate, course)
+		jobsApplied += 1
 
-apply_to_job("python")
+def sendText(client_name, recomm_hourly_rate, course):
+	pass
 
-# driver.close()
+apply_to_job(coursesTaught, jobstoApply)
+
+driver.close()
